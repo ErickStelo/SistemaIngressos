@@ -90,7 +90,7 @@ create table evento_produto_lote
 );
 
 -- Vincula os lotes do evento, com seus setores e respectivos valores
-
+drop table if exists lote_produto_categoria_preco_valor;
 create table lote_produto_categoria_preco_valor
 (
     lpv_codigo          serial,
@@ -98,8 +98,10 @@ create table lote_produto_categoria_preco_valor
     cap_codigo          int              not null references categoria_preco (cap_codigo) on delete cascade,
     lpv_limiteingressos int,
     lpv_valoringresso   double precision not null,
+    lpv_encerrado boolean default false,
     PRIMARY KEY (lpv_codigo)
 );
+select * from lote_produto_categoria_preco_valor;
 
 -- Tabela que vai registrar a saída dos ingressos
 create table ingresso_saida

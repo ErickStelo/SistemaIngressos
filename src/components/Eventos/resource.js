@@ -92,6 +92,13 @@ export default {
             return error.response;
         })
     },
+    async removerLoteFromProduto(data) {
+        return await Api().post('/removerLoteFromProduto', data).then(response => {
+            return response.data;
+        }).catch(error => {
+            return error.response;
+        })
+    },
 
     async addCategoriaPrecoToLote(data) {
         return await Api().post('/addCategoriaPrecoToLote', data).then(response => {
@@ -102,6 +109,13 @@ export default {
     },
     async removeCategoriaPrecoFromLote(data) {
         return await Api().post('/removeCategoriaPrecoFromLote', data).then(response => {
+            return response.data;
+        }).catch(error => {
+            return error.response;
+        })
+    },
+    async saveCategoriaPreco(data) {
+        return await Api().post('/saveCategoriaPreco', data).then(response => {
             return response.data;
         }).catch(error => {
             return error.response;

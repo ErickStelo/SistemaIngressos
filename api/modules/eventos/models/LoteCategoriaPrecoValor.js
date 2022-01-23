@@ -25,6 +25,10 @@ module.exports = {
                 type: DataTypes.DOUBLE,
                 allowNull: false
             },
+            lpv_encerrado:{
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+            },
         },{
             tableName: 'lote_produto_categoria_preco_valor',
             schema: 'public',

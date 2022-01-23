@@ -14,7 +14,9 @@ router.post('/adicionarProduto', ctr.adicionarProduto);
 router.get('/getProdutosLotes/:eve_codigo', ctr.getProdutosLotes);
 router.get('/removerProduto/:eve_codigo/:epr_codigo', ctr.removerProduto);
 router.get('/addLoteToProduto/:epr_codigo', ctr.addLoteToProduto);
+router.post('/removerLoteFromProduto', ctr.removerLoteFromProduto);
 router.post('/addCategoriaPrecoToLote', ctr.addCategoriaPrecoToLote);
 router.post('/removeCategoriaPrecoFromLote', ctr.removeCategoriaPrecoFromLote);
+router.post('/saveCategoriaPreco', ctr.saveCategoriaPreco);
 
 module.exports = router;

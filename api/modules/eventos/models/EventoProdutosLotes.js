@@ -41,5 +41,9 @@ module.exports = {
             as:'EventoProdutos',
             foreignKey: 'epr_codigo'
         })
+        models.EventoProdutoLote.hasMany(models.LoteCategoriaPrecoValor,{
+            as:'LoteCategoriaPrecoValor',
+            foreignKey: 'epl_codigo'
+        })
     } 
 }

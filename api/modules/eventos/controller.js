@@ -255,12 +255,18 @@ module.exports = {
 
         promise.push(
             EventoProdutos.findAll({
-                include:[
-                    {
-                        model: req.orm.model.EventoProdutoLote,
-                        as: 'ProdutoLotes'
-                    }
-                ],
+                include: [{
+                    model: req.orm.model.EventoProdutoLote,
+                    as: 'ProdutoLotes',
+                    include: [{
+                        model: req.orm.model.LoteCategoriaPrecoValor,
+                        as: 'LoteCategoriaPrecoValor',
+                        include: [{
+                            model: req.orm.model.CategoriaPrecos,
+                            as: 'CategoriaPrecos'
+                        }]
+                    }]
+                }],
                 where: {
                     eve_codigo: req.params.eve_codigo
                 }
@@ -323,7 +329,26 @@ module.exports = {
                 epl_lote_numero: nextNumLote,
                 epl_ativo: (nextNumLote === 1 ? true : false)
             }).then(newLote => {
-                res.status(200).json(newLote);
+                EventoProdutoLote.findByPk(newLote.epl_codigo, {
+                    include: [{
+                        model: req.orm.model.LoteCategoriaPrecoValor,
+                        as: 'LoteCategoriaPrecoValor',
+                        include: [{
+                            model: req.orm.model.CategoriaPrecos,
+                            as: 'CategoriaPrecos'
+                        }]
+                    }]
+                }).then(loteData => {
+                    res.status(200).json(loteData);
+                }).catch(error => {
+                    logger.error('> ', error);
+                    return res.status(500).json({
+                        notifications: [{
+                            type: 'error',
+                            message: `Não foi possivel consultar as informações do novo lote!`
+                        }]
+                    });
+                })
             }).catch(error => {
                 logger.error('> ', error);
                 return res.status(500).json({
@@ -339,6 +364,33 @@ module.exports = {
                 notifications: [{
                     type: 'error',
                     message: `Não foi possivel adicionar o novo lote!`
+                }]
+            });
+        })
+
+    },
+
+    removerLoteFromProduto: function(req, res, next) {
+        var payload = req.body;
+        var EventoProdutoLote = req.orm.model.EventoProdutoLote;
+        logger.info('Payload received: ', payload);
+
+        EventoProdutoLote.destroy({
+            where: {
+                epl_codigo: payload.epl_codigo
+            }
+        }).then(removed => {
+            return res.status(200).json({
+                notifications: [{
+                    type: 'success',
+                    message: `Lote removido com sucesso!`
+                }]
+            });
+        }).catch(error => {
+            return res.status(500).json({
+                notifications: [{
+                    type: 'error',
+                    message: `Não foi possivel remover este lote do produto!`
                 }]
             });
         })
@@ -362,8 +414,23 @@ module.exports = {
                     cap_codigo: payload.cap_codigo,
                     lpv_limiteingressos: null,
                     lpv_valoringresso: 0
-                }).then(newCategoriaValorLote => {
-                    res.status(200).json(newCategoriaValorLote)
+                }).then(newCVL => {
+                    LoteCategoriaPrecoValor.findByPk(newCVL.lpv_codigo, {
+                        include: [{
+                            model: req.orm.model.CategoriaPrecos,
+                            as: 'CategoriaPrecos'
+                        }]
+                    }).then(dataCategoriaValorLote =>{
+                        res.status(200).json(dataCategoriaValorLote)
+
+                    }).catch(error =>{
+                        return res.status(500).json({
+                           notifications: [{
+                             type: 'error',
+                             message: `Não foi possivel consultar as informações da nova categoria de valores`
+                           }]
+                        });
+                    })
                 }).catch(error => {
                     logger.error('>', error);
                     return res.status(500).json({
@@ -396,5 +463,45 @@ module.exports = {
         var payload = req.body;
         var LoteCategoriaPrecoValor = req.orm.model.LoteCategoriaPrecoValor
         logger.info('Payload received:', payload);
+
+        LoteCategoriaPrecoValor.destroy({
+            where:{
+                lpv_codigo: payload.lpv_codigo
+            }
+        }).then(removed =>{
+            res.status(200).json();
+        }).catch(error =>{
+            return res.status(500).json({
+               notifications: [{
+                 type: 'error',
+                 message: `Não foi possivel remover a categoria de valor deste lote`
+               }]
+            });
+        })
+    },
+    saveCategoriaPreco: function(req, res, next) {
+        var payload = req.body;
+        var LoteCategoriaPrecoValor = req.orm.model.LoteCategoriaPrecoValor
+        logger.info('Payload received:', payload);
+
+        LoteCategoriaPrecoValor.update(payload,{
+            where:{
+                lpv_codigo: payload.lpv_codigo
+            }
+        }).then(removed =>{
+            return res.status(200).json({
+               notifications: [{
+                 type: 'success',
+                 message: `Categoria de valor atualizada`
+               }]
+            });
+        }).catch(error =>{
+            return res.status(500).json({
+               notifications: [{
+                 type: 'error',
+                 message: `Não foi possivel atualizar a categoria de valor deste lote`
+               }]
+            });
+        })
     }
 }

@@ -22,7 +22,16 @@ export default {
             produtosLotes: {},
             categoriaValores: {},
             catValorSelectedToAdd: null,
-            loteSelectedToAddCatValor: null
+            loteSelectedToAddCatValor: null,
+            categoriaValorLoteForm: [],
+            money: {
+                decimal: ',',
+                thousands: '.',
+                prefix: 'R$ ',
+                suffix: '',
+                precision: 2,
+                masked: false
+              }
         }
     },
     validations: {
@@ -35,7 +44,7 @@ export default {
             evp_nome: {
                 required
             },
-        }
+        },
     },
     methods: {
         edit: function() {
@@ -84,6 +93,7 @@ export default {
         getProdutosLotes: function() {
             blockUI(true)
             Evento.getProdutosLotes(this.eve_codigo).then(data => {
+                console.log(data.produtosLotes);
                 this.produtosLotes = data.produtosLotes;
                 this.categoriaValores = data.categoriaValores;
             })
@@ -91,6 +101,7 @@ export default {
         adicionarProduto: function() {
             this.$v.newProdutoForm.$touch()
             if (!this.$v.newProdutoForm.$invalid) {
+                blockUI(true)
                 Evento.adicionarProduto({
                     eve_codigo: this.eve_codigo,
                     epr_nome: this.newProdutoForm.evp_nome
@@ -113,20 +124,42 @@ export default {
             })
         },
         addLoteToProduto: function(produto) {
+            blockUI(true)
             Evento.addLoteToProduto(produto.epr_codigo).then(newLote => {
-                    produto.ProdutoLotes.push(newLote);
+                produto.ProdutoLotes.push(newLote);
+            })
+        },
+        removerLoteFromProduto: function(produto, lote, idx) {
+            blockUI(true)
+            Evento.removerLoteFromProduto(lote).then(removed => {
+                produto.ProdutoLotes.splice(idx, 1);
             })
         },
         addCategoriaPrecoToLote: function() {
             $('#modalAddCategoriaValor').modal('hide');
+            blockUI(true)
             Evento.addCategoriaPrecoToLote({
                 eve_codigo: this.eve_codigo,
-                epl_codigo: this.loteSelectedToAddCatValor,
+                epl_codigo: this.loteSelectedToAddCatValor.epl_codigo,
                 cap_codigo: this.catValorSelectedToAdd
-            }).then(r => {
+            }).then(newCategoriaValorLote => {
+                this.loteSelectedToAddCatValor.LoteCategoriaPrecoValor.push(newCategoriaValorLote)
                 this.loteSelectedToAddCatValor = null;
                 this.catValorSelectedToAdd = null;
             })
+        },
+        removeCategoriaPrecoFromLote: function(lote, categoriaValor, idx){
+            Evento.removeCategoriaPrecoFromLote(categoriaValor).then(r=>{
+                lote.LoteCategoriaPrecoValor.splice(idx, 1);
+            })
+        },
+
+        saveCategoriaPreco: function(categoriaValor){
+            blockUI(true)
+           Evento.saveCategoriaPreco(categoriaValor).then(updated =>{
+
+           })
+
         }
     },
     mounted: function() {

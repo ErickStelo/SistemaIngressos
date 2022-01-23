@@ -91,11 +91,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="produtoslotes" role="tabpanel" aria-labelledby="produtoslotes-tab">
+                    <div class="tab-pane fade pb-5" id="produtoslotes" role="tabpanel" aria-labelledby="produtoslotes-tab">
                         <div class="row pt-4">
                             <form v-on:submit.prevent='adicionarProduto()'>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col">
                                         <div class="form-group">
                                             <label for="evp_nome">Adicionar produto</label>
                                             <input type="text" class="form-control" :class="{'is-invalid': $v.newProdutoForm.evp_nome.$error}" v-model="newProdutoForm.evp_nome" name="evp_nome" id="evp_nome" aria-describedby="helpId" placeholder="Camarote, VIP, Pista">
@@ -108,54 +108,87 @@
                             </form>
                         </div>
                         <div class="row pt-4">
-                            <div class="col-md-12">
-                                <div class="col-md-12 mb-3" style="border: 1px solid #dbdbdb; border-radius: 0px 0px 9px 9px; padding: 10px 10px 10px 10px;" v-for="(produto, idx) in produtosLotes" :key='produto.epr_codigo'>
-                                    <div class="row">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h3 class="ms-3">{{produto.epr_nome}}</h3>
-                                            </div>
-                                            <div class="col text-end" style="padding: 0">
-                                                <button type="button" v-on:click='removerProduto(produto, idx)' class="btn btn-primary btn-sm" title="Remover este produto"><i class="far fa-trash-alt"></i></button>
-                                            </div>
-                                        </div>
-                                        <!-- Lotes do produto -->
-                                        <div class="row" style="margin: 0 auto; padding: 0;">
-                                            <div class="col-md-12" style="margin: 0; padding:0">
-                                                <div class="row" style="margin: 0; padding:0">
-                                                    <div class="col-md-12" v-for='lote in produto.ProdutoLotes' :key='lote.epl_codigo' style="margin-bottom: 10px">
-                                                        <div class="card ">
-                                                            <div class="card-body">
-                                                                <div class="row">
-                                                                    <div class="col">
-                                                                        <h6>Lote {{lote.epl_lote_numero}}</h6>
-                                                                    </div>
-                                                                    <div class="col text-end">
-                                                                        <div class="btn-group" role="group">
-                                                                            <button type="button" class="btn btn-primary btn-sm"><i class="far fa-trash-alt"></i></button>
-                                                                            <button type="button" v-if="lote.epl_ativo === true" class="btn btn-secondary btn-sm">Encerrar lote</button>
-                                                                            <button type="button" v-if="lote.epl_ativo === false" class="btn btn-success btn-sm">Ativar lote</button>
+                            <div class="col-md-12 p-0 m-0">
+                                <div class="col-md-12" style="padding: 10px 10px 10px 10px;" v-for="(produto, idx) in produtosLotes" :key='produto.epr_codigo'>
+                                    <!-- <div class="col-md-12 mb-3" style="border: 1px solid #dbdbdb; border-radius: 0px 0px 9px 9px; padding: 10px 10px 10px 10px;" v-for="(produto, idx) in produtosLotes" :key='produto.epr_codigo'> -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingTwo">
+
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" v-bind:data-bs-target="'#collapseProduct_'+ produto.epr_codigo" aria-expanded="false" v-bind:aria-controls="'collapseProduct_'+ produto.epr_codigo">
+                                                <h3 class="m-0">{{produto.epr_nome}}</h3>
+                                            </button>
+                                        </h2>
+                                        <div v-bind:id="'collapseProduct_'+ produto.epr_codigo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                            <div class="accordion-body px-0 py-2">
+                                                <!-- Lotes do produto -->
+                                                <div class="row" style="margin: 0 auto; padding: 0;">
+                                                    <div class="col-md-12 p-0 m-0">
+                                                        <div class="row p-0 m-0">
+                                                            <div class="col-md-12 pb-2" v-for='(lote, idx) in produto.ProdutoLotes' :key='lote.epl_codigo'>
+                                                                <div class="card ">
+                                                                    <div class="card-body">
+                                                                        <div class="row">
+                                                                            <div class="col">
+                                                                                <h6 class="py-2 px-0 m-0">Lote {{lote.epl_lote_numero}}</h6>
+                                                                            </div>
+                                                                            <div class="col text-end">
+                                                                                <div class="btn-group" role="group">
+                                                                                    <button type="button" v-on:click='removerLoteFromProduto(produto, lote, idx)' class="btn btn-dark btn-sm"><i class="far fa-trash-alt"></i></button>
+                                                                                    <button type="button" v-if="lote.epl_ativo === true" class="btn btn-secondary btn-sm">Encerrar lote</button>
+                                                                                    <button type="button" v-if="lote.epl_ativo === false" class="btn btn-success btn-sm">Ativar lote</button>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        This is some text within a card body.
-                                                                    </div>
-                                                                    <div class="col-md-12 text-center" style="padding: 0">
-                                                                        <button type="button" class="btn btn-primary btn-sm" v-on:click='loteSelectedToAddCatValor = 1' data-bs-toggle="modal" data-bs-target="#modalAddCategoriaValor"><i class="fas fa-plus-circle"></i>&ensp;Categoria de preço</button>
+                                                                        <div class="row mt-4">
+                                                                            <div class="col-md-12 mb-3">
+                                                                                <div class="row" v-for='(categoriaValor, idx) in lote.LoteCategoriaPrecoValor' :key='categoriaValor.lpv_codigo'>
+                                                                                    <div class="col-md-12 p-0 pb-3">
+                                                                                        <p class="m-0 fw-bold">{{categoriaValor.CategoriaPrecos.cap_nome}}</p>
+                                                                                        <form>
+                                                                                            <table class="table align-middle m-0 p-0">
+                                                                                                <tr>
+                                                                                                    <td class='pe-2'>
+                                                                                                        <!-- <input type="text" v-model='categoriaValor.lpv_valoringresso' class="form-control form-control-sm" name="lpv_valoringresso" id="lpv_valoringresso" aria-describedby="helpId" placeholder="Valor do ingresso"> -->
+                                                                                                        <money class="form-control form-control-sm" v-model="categoriaValor.lpv_valoringresso" name="lpv_valoringresso" id="lpv_valoringresso" aria-describedby="helpId" placeholder="Valor do ingresso" v-bind="money"></money>
+                                                                                                    </td>
+                                                                                                    <td class='pe-2'>
+                                                                                                        <input type="text" v-model='categoriaValor.lpv_limiteingressos' class="form-control form-control-sm" name="lpv_limiteingressos" id="lpv_limiteingressos" aria-describedby="helpId" placeholder="Limite de ingressos">
+                                                                                                    </td>
+                                                                                                    <td class="text-center">
+                                                                                                        <div class="btn-group">
+                                                                                                            <button type="button" v-on:click='saveCategoriaPreco(categoriaValor)' class="btn btn-dark btn-sm"><i class="far fa-save"></i></button>
+                                                                                                            <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                                                                Ações
+                                                                                                            </button>
+                                                                                                            <ul class="dropdown-menu">
+                                                                                                                <li><a class="dropdown-item" v-on:click='removeCategoriaPrecoFromLote(lote, categoriaValor, idx)'>Excluir</a></li>
+                                                                                                                <li><a class="dropdown-item" href="#">Encerrar venda</a></li>
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            </table>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-12 text-center" style="padding: 0">
+                                                                                <button type="button" class="btn btn-primary btn-sm" v-on:click='loteSelectedToAddCatValor = lote' data-bs-toggle="modal" data-bs-target="#modalAddCategoriaValor"><i class="fas fa-plus-circle"></i>&ensp;Categoria de preço</button>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <!-- Ações do produto -->
-                                        <div class="col-md-12 text-center" style="padding: 20px">
-                                            <div class="btn-group" role="group" aria-label="Basic example">
-                                                <button type="button" v-on:click='addLoteToProduto(produto)' class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i>&ensp;Adicionar lote</button>
+                                                <!-- Ações do produto -->
+                                                <div class="col-md-12 text-center" style="padding: 20px">
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <button type="button" v-on:click='addLoteToProduto(produto)' class="btn btn-dark btn-sm"><i class="fas fa-plus-circle"></i>&ensp;Adicionar lote</button>
+                                                        <button type="button" v-on:click='removerProduto(produto, idx)' class="btn btn-secondary btn-sm" title="Remover este produto"><i class="far fa-trash-alt"></i>&ensp;Remover produto</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -166,7 +199,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- Modal add Categoria valor -->
         <div class="modal fade" id="modalAddCategoriaValor" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
