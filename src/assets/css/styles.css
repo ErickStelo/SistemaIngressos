@@ -3047,7 +3047,6 @@ textarea.form-control-lg {
 .btn-primary {
   color: #fff;
   background-color: #000636;
-  border-color: #000636;
 }
 .btn-primary:hover {
   color: #fff;
@@ -11821,4 +11820,8 @@ input::placeholder{
 
 .btn-primary {
     background-color: #1564bf !important;
+}
+
+a:hover{
+  text-decoration: none !important;
 }

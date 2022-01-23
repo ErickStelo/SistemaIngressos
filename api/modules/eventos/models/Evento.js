@@ -3,7 +3,7 @@ const moment = require('moment');
 
 module.exports = {
     instanceModel: function(sequelize){
-        const Model = sequelize.define('Eventos', {
+        const Model = sequelize.define('Evento', {
             eve_codigo: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -11,11 +11,11 @@ module.exports = {
             },
             eve_nome:{
                 type: DataTypes.STRING,
-                allowNull: null
+                allowNull: false
             },
             eve_data:{
                 type: DataTypes.DATE,
-                allowNull: null
+                allowNull: true
             },
             eve_local:{
                 type: DataTypes.STRING,

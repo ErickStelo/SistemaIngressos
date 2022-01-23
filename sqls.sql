@@ -55,6 +55,7 @@ create table evento_promoters
     primary key (evp_codigo)
 );
 
+
 create table categoria_preco
 (
     cap_codigo serial      not null,
@@ -70,28 +71,30 @@ values ('Promocional'),
 -- Armazena os produtos (setores) do evento
 create table evento_produtos
 (
-    evp_codigo serial      not null,
+    epr_codigo serial      not null,
     eve_codigo int         not null references evento (eve_codigo) on delete cascade,
-    evp_nome   varchar(50) not null,
-    PRIMARY KEY (evp_codigo)
+    epr_nome   varchar(50) not null,
+    PRIMARY KEY (epr_codigo)
 );
 
 -- Vincula os eventos com seus lotes
-create table evento_produto_lotes
+DROP TABLE IF EXISTS evento_produto_lote;
+create table evento_produto_lote
 (
     epl_codigo         serial not null,
-    eve_codigo         int    not null references evento (eve_codigo) on delete cascade,
-    evp_codigo         int    not null references evento_produtos (evp_codigo) on delete cascade,
-    epl_numero         int    not null,
-    epl_ativo          boolean default true,
-    epl_datafechamento date
+    epr_codigo         int    not null references evento_produtos (epr_codigo) on delete cascade,
+    epl_lote_numero    int    not null,
+    epl_ativo          boolean default false,
+    epl_datafechamento date,
+    primary key (epl_codigo)
 );
 
 -- Vincula os lotes do evento, com seus setores e respectivos valores
-create table lote_produto_categoria_preco_valores
+
+create table lote_produto_categoria_preco_valor
 (
     lpv_codigo          serial,
-    epl_codigo          int              not null references evento_produto_lotes (epl_codigo) on delete cascade,
+    epl_codigo          int              not null references evento_produto_lote (epl_codigo) on delete cascade,
     cap_codigo          int              not null references categoria_preco (cap_codigo) on delete cascade,
     lpv_limiteingressos int,
     lpv_valoringresso   double precision not null,

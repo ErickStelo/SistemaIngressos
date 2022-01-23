@@ -11,6 +11,7 @@ async function init() {
     app.use(cors())
 
     global.logger = require('./core/logger')
+    global._= require('lodash');
 
     var orm = await require('./core/chargeSequelize');
     app.use((req, res, next) => {

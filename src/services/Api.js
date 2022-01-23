@@ -28,7 +28,7 @@ function getAccessToken(){
 }
 
 var AxiosInstance = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://192.168.0.193:3000',
     timeout: 6000,
     headers:{
         'x-access-token': getAccessToken()

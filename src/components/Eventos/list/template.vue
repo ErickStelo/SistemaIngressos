@@ -11,7 +11,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-end">
-                <router-link to="/eventos/adicionar" role="button" class="btn btn-dark">Adicionar evento</router-link>
+                <router-link to="/eventos/adicionar" role="button" class="btn btn-dark" style="color: #fff">Adicionar evento</router-link>
             </div>
         </div>
         <div class="row">

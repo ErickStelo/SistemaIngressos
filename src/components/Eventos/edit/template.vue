@@ -16,10 +16,10 @@
                         <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">Informações Básicas</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="promoters-tab" data-bs-toggle="tab" data-bs-target="#promoters" type="button" role="tab" aria-controls="promoters" aria-selected="false">Profile</button>
+                        <button class="nav-link" id="promoters-tab" data-bs-toggle="tab" data-bs-target="#promoters" type="button" role="tab" aria-controls="promoters" aria-selected="false">Promoters</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+                        <button class="nav-link" id="produtoslotes-tab" data-bs-toggle="tab" data-bs-target="#produtoslotes" type="button" role="tab" aria-controls="produtoslotes" aria-selected="false" v-on:click='getProdutosLotes()'>Produtos e lotes</button>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -53,74 +53,141 @@
                         </form>
                     </div>
                     <div class="tab-pane fade" id="promoters" role="tabpanel" aria-labelledby="promoters-tab">
+                        <div class="row pt-3">
+                            <div class="col-md-10">
+                                <label for="form-label">Adicionar promoter</label>
+                                <select v-model="promoterOption" class="form-select" id="floatingSelectGrid" aria-label="Floating label select example">
+                                    <option selected>Selecione um promoter</option>
+                                    <option v-for='promoter in promotersOptions' :key='promoter.pro_codigo' v-bind:value="promoter.pro_codigo">{{promoter.pro_nome}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 pt-4 text-center">
+                                <button type="button" v-on:click='addPromoter()' class="btn btn-dark">Adicionar Promoter</button>
+                            </div>
+                        </div>
+                        <hr class="mt-3 mb-3">
                         <div class="row">
                             <div class="col-md-12">
-<v-card
-    color="red lighten-2"
-    dark
-  >
-    <v-card-title class="text-h5 red lighten-3">
-      Search for Public APIs
-    </v-card-title>
-    <v-card-text>
-      Explore hundreds of free API's ready for consumption! For more information visit
-      <a
-        class="grey--text text--lighten-3"
-        href="https://github.com/toddmotto/public-apis"
-        target="_blank"
-      >the GitHub repository</a>.
-    </v-card-text>
-    <v-card-text>
-      <v-autocomplete
-        v-model="model"
-        :items="items"
-        :loading="isLoading"
-        :search-input.sync="search"
-        color="white"
-        hide-no-data
-        hide-selected
-        item-text="Description"
-        item-value="API"
-        label="Public APIs"
-        placeholder="Start typing to Search"
-        prepend-icon="mdi-database-search"
-        return-object
-      ></v-autocomplete>
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-expand-transition>
-      <v-list
-        v-if="model"
-        class="red lighten-3"
-      >
-        <v-list-item
-          v-for="(field, i) in fields"
-          :key="i"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="field.value"></v-list-item-title>
-            <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-expand-transition>
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        :disabled="!model"
-        color="grey darken-3"
-        @click="model = null"
-      >
-        Clear
-        <v-icon right>
-          mdi-close-circle
-        </v-icon>
-      </v-btn>
-    </v-card-actions>
-  </v-card>                            </div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Promoter</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for='promoter in promotersList' :key='promoter.evp_codigo'>
+                                            <td scope="row">{{promoter.evp_codigo}}</td>
+                                            <td>{{promoter.Promoter.pro_nome}}</td>
+                                            <td class="text-end">
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <button type="button" class="btn btn-white" v-bind:id="'btnExcluir_'+[promoter.evp_codigo]" v-on:click="excluirPromoter(promoter)"><i class="fas fa-trash"></i></button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+                    <div class="tab-pane fade" id="produtoslotes" role="tabpanel" aria-labelledby="produtoslotes-tab">
+                        <div class="row pt-4">
+                            <form v-on:submit.prevent='adicionarProduto()'>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="evp_nome">Adicionar produto</label>
+                                            <input type="text" class="form-control" :class="{'is-invalid': $v.newProdutoForm.evp_nome.$error}" v-model="newProdutoForm.evp_nome" name="evp_nome" id="evp_nome" aria-describedby="helpId" placeholder="Camarote, VIP, Pista">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 text-center pt-4" style="padding: 0">
+                                        <button type="submit" class="btn btn-dark">Adicionar Produto</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row pt-4">
+                            <div class="col-md-12">
+                                <div class="col-md-12 mb-3" style="border: 1px solid #dbdbdb; border-radius: 0px 0px 9px 9px; padding: 10px 10px 10px 10px;" v-for="(produto, idx) in produtosLotes" :key='produto.epr_codigo'>
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h3 class="ms-3">{{produto.epr_nome}}</h3>
+                                            </div>
+                                            <div class="col text-end" style="padding: 0">
+                                                <button type="button" v-on:click='removerProduto(produto, idx)' class="btn btn-primary btn-sm" title="Remover este produto"><i class="far fa-trash-alt"></i></button>
+                                            </div>
+                                        </div>
+                                        <!-- Lotes do produto -->
+                                        <div class="row" style="margin: 0 auto; padding: 0;">
+                                            <div class="col-md-12" style="margin: 0; padding:0">
+                                                <div class="row" style="margin: 0; padding:0">
+                                                    <div class="col-md-12" v-for='lote in produto.ProdutoLotes' :key='lote.epl_codigo' style="margin-bottom: 10px">
+                                                        <div class="card ">
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        <h6>Lote {{lote.epl_lote_numero}}</h6>
+                                                                    </div>
+                                                                    <div class="col text-end">
+                                                                        <div class="btn-group" role="group">
+                                                                            <button type="button" class="btn btn-primary btn-sm"><i class="far fa-trash-alt"></i></button>
+                                                                            <button type="button" v-if="lote.epl_ativo === true" class="btn btn-secondary btn-sm">Encerrar lote</button>
+                                                                            <button type="button" v-if="lote.epl_ativo === false" class="btn btn-success btn-sm">Ativar lote</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        This is some text within a card body.
+                                                                    </div>
+                                                                    <div class="col-md-12 text-center" style="padding: 0">
+                                                                        <button type="button" class="btn btn-primary btn-sm" v-on:click='loteSelectedToAddCatValor = 1' data-bs-toggle="modal" data-bs-target="#modalAddCategoriaValor"><i class="fas fa-plus-circle"></i>&ensp;Categoria de preço</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Ações do produto -->
+                                        <div class="col-md-12 text-center" style="padding: 20px">
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <button type="button" v-on:click='addLoteToProduto(produto)' class="btn btn-primary btn-sm"><i class="fas fa-plus-circle"></i>&ensp;Adicionar lote</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal add Categoria valor -->
+        <div class="modal fade" id="modalAddCategoriaValor" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adicionar nova categoria de valor ao lote</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <select v-model='catValorSelectedToAdd' class="form-control" name="catValorSelectedToAdd" id="catValorSelectedToAdd">
+                                <option selected>Selecione uma opção</option>
+                                <option v-for='categoriaValor in categoriaValores' :key="categoriaValor.cap_codigo" v-bind:value="categoriaValor.cap_codigo">{{categoriaValor.cap_nome}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <button type="button" v-on:click='addCategoriaPrecoToLote()' class="btn btn-primary me-2">Adicionar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

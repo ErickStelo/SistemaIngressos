@@ -14,11 +14,11 @@
                                     <div class="card-body">
                                         <form v-on:submit.prevent='login()'>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" v-model="loginForm.usuario" id="inputUsuario" type="text" placeholder="Usuario" />
+                                                <input class="form-control" v-model="loginForm.usuario" id="inputUsuario" type="text" />
                                                 <label for="inputUsuario">Usuário</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="inputPassword" v-model="loginForm.senha" type="password" placeholder="Password" />
+                                                <input class="form-control" id="inputPassword" v-model="loginForm.senha" type="password" />
                                                 <label for="inputPassword">Senha</label>
                                             </div>
                                             <div class="align-items-center text-center">

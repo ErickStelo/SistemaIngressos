@@ -57,7 +57,7 @@
                 </div>
                 <div id="layoutSidenav_content">
                     <main>
-                        <div class="container-fluid px-4" style="padding-top:20px">
+                        <div class="container-fluid" style="padding-top:20px">
                             <router-view />
                         </div>
                     </main>

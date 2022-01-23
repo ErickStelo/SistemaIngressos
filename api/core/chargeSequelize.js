@@ -5,11 +5,13 @@
 
 const fs = require('fs');
 const path = require('path');
+const { Op } = require("sequelize");
 var orm = {};
 
 module.exports = new Promise(async (resolve, reject) => {
     const Sequelize = require('sequelize');
     const dbConfig = require('./dbConfig');
+    global.$op = Op;
 
     const sequelize = new Sequelize(dbConfig);
     var models = {};
@@ -20,8 +22,18 @@ module.exports = new Promise(async (resolve, reject) => {
             if(fs.existsSync(path.join(modulesFolder + '/' + moduleFolder + '/models'))){
                 let modelPathModule = path.join(modulesFolder + '/' + moduleFolder + '/models')
                 fs.readdirSync(modelPathModule).forEach(modelFile => {
-                    const model = require(path.join(modelPathModule + '/' + modelFile)).instanceModel(sequelize)
+                    const model = require(path.join(modelPathModule + '/' + modelFile)).instanceModel(sequelize);
                     models[model.name] = model;
+                })
+            }
+        })
+        fs.readdirSync(modulesFolder).forEach(moduleFolder => {
+            if(fs.existsSync(path.join(modulesFolder + '/' + moduleFolder + '/models'))){
+                let modelPathModule = path.join(modulesFolder + '/' + moduleFolder + '/models')
+                fs.readdirSync(modelPathModule).forEach(modelFile => {
+                    if(require(path.join(modelPathModule + '/' + modelFile)).associations){
+                        require(path.join(modelPathModule + '/' + modelFile)).associations(models)
+                    }
                 })
             }
         })

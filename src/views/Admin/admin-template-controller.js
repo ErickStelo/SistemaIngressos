@@ -36,6 +36,18 @@ export default {
         link: [
             {
                 rel: 'stylesheet',
+                href: require('../../../node_modules/vue-material/dist/vue-material.min.css'),
+                id: 'theme-style',
+                body: false
+            },
+            {
+                rel: 'stylesheet',
+                href: require('../../../node_modules/vue-material/dist/theme/default.css'),
+                id: 'theme-style',
+                body: false
+            },
+            {
+                rel: 'stylesheet',
                 href: require('../../assets/css/styles.css'),
                 id: 'theme-style',
                 body: false
@@ -48,6 +60,12 @@ export default {
             },
         ],
         script: [
+            {
+                type: 'text/javascript',
+                src: 'https://malsup.github.io/jquery.blockUI.js',
+                async: true,
+                body: false
+            },
             {
                 type: 'text/javascript',
                 src: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js',
