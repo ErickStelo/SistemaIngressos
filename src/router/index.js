@@ -40,6 +40,21 @@ const routes = [
     name: 'PromotersEdit',
     component: () => import('../components/Promoters/edit/template.vue')
   },
+  {
+    path: '/usuarios',
+    name: 'UsuariosList',
+    component: () => import('../components/Usuarios/list/template.vue')
+  },
+  {
+    path: '/usuarios/adicionar',
+    name: 'UsuariosAdd',
+    component: () => import('../components/Usuarios/add/template.vue')
+  },
+  {
+    path: '/usuarios/editar/:usu_codigo',
+    name: 'UsuariosEdit',
+    component: () => import('../components/Usuarios/edit/template.vue')
+  },
 ]
 
 const router = new VueRouter({

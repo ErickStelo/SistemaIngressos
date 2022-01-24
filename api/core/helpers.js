@@ -14,7 +14,7 @@ module.exports = {
          * @returns {String} Hash criada
          */
         encrypt: async function(stringToHash = '', method = 'bcrypt') {
-            return new Promise(resolve => {
+            return new Promise((resolve, reject) => {
                 if (method === 'bcrypt') {
                     bcrypt.genSalt(saltRounds, function(err, salt) {
                         if (!err) {
@@ -49,7 +49,7 @@ module.exports = {
          * @returns {Boolean} Retorna true se a hash for válida e false se inválida
          */
         verify: function(originalString = '', encryptedString = '', method = 'bcrypt') {
-            return new Promise(resolve => {
+            return new Promise((resolve, reject) => {
                 if (method == 'bcrypt') {
                     bcrypt.compare(originalString, encryptedString, function(err, result) {
                         if (!err) {

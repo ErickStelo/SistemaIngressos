@@ -25,6 +25,8 @@ module.exports = {
             deletedAt: false,
         });
 
+        console.log(sequelize.models);
+
         return Model;
     },
     associations: function(models){

@@ -1,3 +1,34 @@
+create table menus
+(
+    men_codigo     serial      not null,
+    men_men_codigo int         default null references menus (men_codigo) on delete cascade,
+    men_nome       varchar(50) not null,
+    men_path       varchar(50) default null,
+    men_ico        varchar(20) default null,
+    men_admin      boolean     default false,
+    PRIMARY KEY (men_codigo)
+);
+
+insert into menus(men_men_codigo, men_nome, men_path, men_ico, men_admin)
+values (null, 'Cadastro de Eventos', '/eventos', 'fa-tachometer-alt', true),
+       (null, 'Cadastro de Promoters', '/promoters', 'fa-user-tie', true),
+       (null, 'Cadastro de Usuários', '/usuarios', 'fa-users', true);
+
+create table usuario
+(
+    usu_codigo    serial,
+    usu_username  varchar(20)  not null,
+    usu_password  varchar(200) not null,
+    pro_codigo    int       default null references promoter (pro_codigo) on delete cascade,
+    usu_admin     boolean   default false,
+    usu_bloquearlogin  boolean   default false,
+    usu_dtcriacao timestamp default now(),
+    primary key (usu_codigo)
+);
+
+insert into usuario (usu_username, usu_password, usu_admin)
+values ('erick', '$2b$10$iH.Zw60U94H/qkxIVD0OPePScyIDBx1.AkLtHVgS/p8KtXUFAY6nm', true);
+
 create table evento
 (
     eve_codigo    serial,
@@ -17,34 +48,6 @@ create table promoter
 );
 insert into promoter (pro_nome, pro_telefone)
 values ('Erick', '54991567366');
---
-drop table if exists usuarios;
-create table usuario
-(
-    usu_codigo    serial,
-    usu_username  varchar(20)  not null,
-    usu_password  varchar(200) not null,
-    pro_codigo    int       default null references promoter (pro_codigo) on delete cascade,
-    usu_admin     boolean   default false,
-    usu_dtcriacao timestamp default now(),
-    primary key (usu_codigo)
-);
-insert into usuario (usu_username, usu_password, usu_admin)
-values ('erick', '$2b$10$iH.Zw60U94H/qkxIVD0OPePScyIDBx1.AkLtHVgS/p8KtXUFAY6nm', true);
-
--- create table setores
--- (
---     set_codigo serial       not null,
---     set_nome   varchar(100) not null,
---     PRIMARY KEY (set_codigo)
--- );
-
--- create table lotes
--- (
---     lot_codigo serial       not null,
---     lot_nome   varchar(100) not null,
---     PRIMARY KEY (lot_codigo)
--- );
 
 -- Vincula o evento com seus promoters
 create table evento_promoters
@@ -78,7 +81,6 @@ create table evento_produtos
 );
 
 -- Vincula os eventos com seus lotes
-DROP TABLE IF EXISTS evento_produto_lote;
 create table evento_produto_lote
 (
     epl_codigo         serial not null,
@@ -90,7 +92,6 @@ create table evento_produto_lote
 );
 
 -- Vincula os lotes do evento, com seus setores e respectivos valores
-drop table if exists lote_produto_categoria_preco_valor;
 create table lote_produto_categoria_preco_valor
 (
     lpv_codigo          serial,
@@ -98,10 +99,9 @@ create table lote_produto_categoria_preco_valor
     cap_codigo          int              not null references categoria_preco (cap_codigo) on delete cascade,
     lpv_limiteingressos int,
     lpv_valoringresso   double precision not null,
-    lpv_encerrado boolean default false,
+    lpv_encerrado       boolean default false,
     PRIMARY KEY (lpv_codigo)
 );
-select * from lote_produto_categoria_preco_valor;
 
 -- Tabela que vai registrar a saída dos ingressos
 create table ingresso_saida

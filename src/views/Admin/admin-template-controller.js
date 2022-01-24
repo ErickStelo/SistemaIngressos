@@ -1,13 +1,24 @@
-import Api from '@/services/Api'
+import Default from './resource'
 
 export default {
     data: function() {
         return {
-            
+            menusList: []
         }
     },
     
     methods: {
+        init: function () {
+            Default.getInitData().then((data) => {
+                if(data.logoutUsuario){
+                    document.cookie = 'x-access-token= expired;expires=Thu, 01 Jan 1970 00:00:01 GMT'
+                    window.location.href = window.location.protocol + '//' + window.location.hostname + `:${window.location.port}`;
+                }else{
+                    this.getMenus();
+                }
+            })
+        },
+        
         logout: function() {
             document.cookie.split(';').some(c => {
                 const cookieName = 'x-access-token=';
@@ -19,9 +30,15 @@ export default {
                 }
             });
         },
+
+        getMenus: function(){
+            Default.getMenus().then(menus => {
+                this.menusList = menus;
+            })
+        }
     },
     mounted: function() {
-
+        this.init();
     },
     head: {
         title: {

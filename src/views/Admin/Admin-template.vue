@@ -30,14 +30,12 @@
                     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                         <div class="sb-sidenav-menu">
                             <div class="nav" style="padding-top: 40px;">
-                                <router-link class="nav-link" to="/eventos">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    Eventos
-                                </router-link>
-                                <router-link class="nav-link" to="/promoters">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user-tie"></i></div>
-                                    Promoters
-                                </router-link>
+                                <div class="m-0 p-0" v-for='menu in menusList' :key='menu.men_codigo'>
+                                    <router-link class="nav-link" v-bind:to='menu.men_path'>
+                                        <div class="sb-nav-link-icon"><i class="fas " v-bind:class="menu.men_ico"></i></div>
+                                        {{menu.men_nome}}
+                                    </router-link>
+                                </div>
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                     Layouts
@@ -49,10 +47,10 @@
                                         <a class="nav-link" href="layout-sidenav-light.html">Light Sidenav</a>
                                     </nav>
                                 </div>
-                                
+
                             </div>
                         </div>
-                        
+
                     </nav>
                 </div>
                 <div id="layoutSidenav_content">

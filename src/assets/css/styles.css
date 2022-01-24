@@ -11816,6 +11816,8 @@ input::placeholder{
 .error-message{
     color: #c81616;
     font-size: 9pt;
+    padding-top: 5px;
+    margin: 0;
 }
 
 .btn-primary {

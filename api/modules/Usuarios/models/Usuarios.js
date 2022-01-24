@@ -26,6 +26,10 @@ module.exports = {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
             },
+            usu_bloquearlogin:{
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
+            },
             usu_dtcriacao:{
                 type: DataTypes.DATE,
                 defaultValue: moment()
@@ -38,5 +42,11 @@ module.exports = {
             deletedAt: false,
         });
         return Model;
-    }
+    },
+    associations: function(models){
+        models.Usuarios.belongsTo(models.Promoter,{
+            as:'Promoter',
+            foreignKey: 'pro_codigo'
+        })
+    } 
 }
